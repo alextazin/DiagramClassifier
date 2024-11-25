@@ -27,30 +27,30 @@ attribute, and attribute type.
 1. Install ArgoUML on Windows
 2. Create an ArgoUML home directory on Linux
 3. Copy the following files to the ArgoUML home directory
-   antlr-2.7.7.jar<br>
-   argouml-euml.jar<br>
-   argouml-mdr.jar<br>
-   argouml-model.jar<br>
-   argouml.jar<br>
-   batik-awt-util-1.7.jar<br>
-   batik-dom-1.7.jar<br>
-   batik-ext-1.7.jar<br>
-   batik-svggen-1.7.jar<br>
-   batik-util-1.7.jar<br>
-   batik-xml-1.7.jar<br>
-   commons-logging-1.0.2.jar<br>
-   gef-0.13.8.jar<br>
-   java-interfaces.jar<br>
-   jmi.jar<br>
-   jmiutils.jar<br>
-   log4j-1.2.6.jar<br>
-   mdrapi.jar<br>
-   mof.jar<br>
-   nbmdr.jar<br>
-   ocl-argo-1.1.jar<br>
-   openide-util.jar<br>
-   swidgets-0.1.4.jar<br>
-   toolbar-1.4.1-20071227.jar<br>
+   - antlr-2.7.7.jar
+   - argouml-euml.jar
+   - argouml-mdr.jar
+   - argouml-model.jar
+   - argouml.jar
+   - batik-awt-util-1.7.jar
+   - batik-dom-1.7.jar
+   - batik-ext-1.7.jar
+   - batik-svggen-1.7.jar
+   - batik-util-1.7.jar
+   - batik-xml-1.7.jar
+   - commons-logging-1.0.2.jar
+   - gef-0.13.8.jar
+   - java-interfaces.jar
+   - jmi.jar
+   - jmiutils.jar
+   - log4j-1.2.6.jar
+   - mdrapi.jar
+   - mof.jar
+   - nbmdr.jar
+   - ocl-argo-1.1.jar
+   - openide-util.jar
+   - swidgets-0.1.4.jar
+   - toolbar-1.4.1-20071227.jar
 4. Add argouml-mdr.jar and argouml-model.jar to Java classpath
 
 ## Jbliss

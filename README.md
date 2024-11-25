@@ -20,13 +20,13 @@ attribute, and attribute type.
 ## Installation
 
 1. Install all the requirements
-2. Build the application by running build.sh
+3. Build the application by running build.sh
 
 ## ArgoUML
 
 1. Install ArgoUML on Windows
-2. Create an ArgoUML home directory on Linux
-3. Copy the following files to the ArgoUML home directory
+3. Create an ArgoUML home directory on Linux
+4. Copy the following files to the ArgoUML home directory
 
      antlr-2.7.7.jar<br>
      argouml-euml.jar<br>
@@ -53,7 +53,7 @@ attribute, and attribute type.
      swidgets-0.1.4.jar<br>
      toolbar-1.4.1-20071227.jar<br>
 
-4. Add argouml-mdr.jar and argouml-model.jar to Java classpath
+5. Add argouml-mdr.jar and argouml-model.jar to Java classpath
 
 ## Jbliss
 

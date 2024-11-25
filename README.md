@@ -19,7 +19,7 @@ attribute, and attribute type.
 
 ## Installation
 
-1 .Install all the requirements
+1. Install all the requirements
 2. Build the application by running build.sh
 
 ## ArgoUML

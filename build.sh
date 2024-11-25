@@ -3,7 +3,7 @@
 SRC_DIR="src"
 BUILD_DIR="build"
 JAR_NAME="app.jar"
-MAIN_CLASS="edu.diagramclassifier.DiagramClassifier" 
+MAIN_CLASS="diagramclassifier.DiagramClassifier" 
 
 echo "Cleaning up previous builds..."
 rm -rf "$BUILD_DIR"

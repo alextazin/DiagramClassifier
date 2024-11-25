@@ -2,7 +2,7 @@
 
 SRC_DIR="src"
 BUILD_DIR="build"
-JAR_NAME="app.jar"
+JAR_NAME="DiagramClassifier.jar"
 MAIN_CLASS="diagramclassifier.DiagramClassifier" 
 
 echo "Cleaning up previous builds..."

@@ -20,6 +20,8 @@ attribute, and attribute type.
 ## Installation
 
 1. Install all the requirements
+   - sdasd
+   - sadasdasd
 3. Build the application by running build.sh
 
 ## ArgoUML

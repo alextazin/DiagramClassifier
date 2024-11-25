@@ -20,9 +20,7 @@ attribute, and attribute type.
 ## Installation
 
 1. Install all the requirements
-   - sdasd
-   - sadasdasd
-3. Build the application by running build.sh
+2. Build the application by running build.sh
 
 ## ArgoUML
 
@@ -55,7 +53,7 @@ attribute, and attribute type.
      swidgets-0.1.4.jar<br>
      toolbar-1.4.1-20071227.jar
 
-5. Add argouml-mdr.jar and argouml-model.jar to Java classpath
+4. Add argouml-mdr.jar and argouml-model.jar to Java classpath
 
 ## Jbliss
 

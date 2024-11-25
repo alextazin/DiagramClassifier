@@ -27,7 +27,6 @@ attribute, and attribute type.
 1. Install ArgoUML on Windows
 2. Create an ArgoUML home directory on Linux
 3. Copy the following files to the ArgoUML home directory
-
      antlr-2.7.7.jar<br>
      argouml-euml.jar<br>
      argouml-mdr.jar<br>
@@ -52,7 +51,6 @@ attribute, and attribute type.
      openide-util.jar<br>
      swidgets-0.1.4.jar<br>
      toolbar-1.4.1-20071227.jar<br>
-
 4. Add argouml-mdr.jar and argouml-model.jar to Java classpath
 
 ## Jbliss

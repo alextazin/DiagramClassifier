@@ -1489,7 +1489,6 @@ public class DiagramClassCalculator {
 
   }
 
- 
   public static boolean isMappedToBasicPatternNode(ArrayList<ArrayList<NodePair>> diagramCoverageNodeMappingList, Node node) {
     for (ArrayList<NodePair> nodeMapping : diagramCoverageNodeMappingList)
       for (NodePair nodePair: nodeMapping)

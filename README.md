@@ -1,10 +1,10 @@
 # Class Diagram Classifier 1.0
 
 This application allows to classifiy ArgoUML class diagrams represented in 
-XMI 1.2 format. The current version supports four basic pattern diagrams. The images 
-of these diagrams can be found in the doc directory for reference. The basic pattern 
+XMI 1.2 format. The current version supports four basic template diagrams. The images 
+of these diagrams can be found in the doc directory for reference. The basic template 
 diagrams cannot be specified as input. Rather the E-graphs 
-representing these diagrams are generated in the code. The basic patterns 
+representing these diagrams are generated in the code. The basic templates 
 support the following class diagram concepts: class, generalization, binary 
 association, association end, association end multiplicity, association end 
 navigable property, data type (for representing primitive data types), 

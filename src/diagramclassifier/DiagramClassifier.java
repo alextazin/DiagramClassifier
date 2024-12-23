@@ -75,14 +75,14 @@ public class DiagramClassifier {
   }
 
   /**
-   * Returns an index of the graph of the complex pattern diagram 
+   * Returns an index of the graph of the complex template diagram 
    * representing the class of class diagrams from the list of graphs of the 
    * complex pattern diagrams representing the classes of class diagrams.
-   * @param graphClassList - the list of graphs of the complex pattern 
+   * @param graphClassList - the list of graphs of the complex template 
    *        diagrams representing the classes of class diagrams
-   *        graphClass - the graph of the complex pattern diagram 
+   *        graphClass - the graph of the complex template diagram 
    *        representing the class of class diagrams
-   * @return the index of the graph of the complex pattern diagram 
+   * @return the index of the graph of the complex template diagram 
    *         representing the class of class diagrams; -1 if no such graph 
    *         found
    */

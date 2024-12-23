@@ -21,6 +21,10 @@ public class Edge {
   // The graph edge name
   private String name;
 
+  private boolean matched = false;
+
+  private boolean mapped = false;
+
   public Edge(String name, String type, Node source, Node target) {
     this.name = name;
     this.type = type;
@@ -42,6 +46,22 @@ public class Edge {
 
   public String getType() {
     return type;
+  }
+
+  public void setMatched(boolean matched) {
+    this.matched = matched;
+  }
+
+  public boolean isMatched() {
+    return matched;
+  }
+
+  public void setMapped(boolean mapped) {
+    this.mapped = mapped;
+  }
+
+  public boolean isMapped() {
+    return mapped;
   }
 
 }

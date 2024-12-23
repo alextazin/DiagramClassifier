@@ -35,7 +35,7 @@ public class DiagramClassCalculator {
 
   /**
    * True if the given class diagram is covered by copies for the given basic 
-   * patterns.
+   * templates.
    */
   private boolean basicPatternCoverage = false;
 
@@ -57,389 +57,19 @@ public class DiagramClassCalculator {
 
     try {
 
+      BasicPatternGraphGenerator basicPatternGraphGenerator = new BasicPatternGraphGenerator();
+      basicPatternGraphGenerator.createInstancesOfBasicPatternGraph(diagramGraph, BasicPatternGraphGenerator::createBasicPatternGraph2);
+      basicPatternGraphGenerator.createInstancesOfBasicPatternGraph(diagramGraph, BasicPatternGraphGenerator::createBasicPatternGraph3);
+      basicPatternGraphGenerator.createInstancesOfBasicPatternGraph(diagramGraph, BasicPatternGraphGenerator::createBasicPatternGraph4);
+      basicPatternGraphGenerator.createInstancesOfBasicPatternGraph(diagramGraph, BasicPatternGraphGenerator::createBasicPatternGraph1);
+
       ArrayList<Edge> diagramEdgeList = diagramGraph.getEdgeList();
       ArrayList<Node> diagramNodeList = diagramGraph.getNodeList();
 
-      ArrayList<DiagramGraph> basicPatternGraphList = new ArrayList<DiagramGraph>();
+      ArrayList<DiagramGraph> basicPatternGraphList = basicPatternGraphGenerator.getBasicPatternList();
 
-      ArrayList<ArrayList<NodePair>> diagramCoverageNodeMappingList = new ArrayList<ArrayList<NodePair>>();
-      ArrayList<ArrayList<EdgePair>> diagramCoverageEdgeMappingList = new ArrayList<ArrayList<EdgePair>>();
-      ArrayList<ArrayList<DataNodePair>> diagramCoverageDataNodeMappingList = new ArrayList<ArrayList<DataNodePair>>();
-      ArrayList<ArrayList<AttributeEdgePair>> diagramCoverageAttrEdgeMappingList = new ArrayList<ArrayList<AttributeEdgePair>>();
-
-      ArrayList<Node> diagramGenNodeList = diagramGraph.getNodeList("Generalization");
-      ArrayList<Node> diagramAssocNodeList = diagramGraph.getNodeList("Association");
-      ArrayList<Node> diagramPropNodeList = diagramGraph.getNodeList("Property");
-      ArrayList<Node> diagramClassNodeList = diagramGraph.getNodeList("Class");
-      ArrayList<Node> diagramDataTypeNodeList = diagramGraph.getNodeList("DataType");
-
-      int propNodeCountStart = 0;
-      int propNodeCount = 0;
-
-      while (true) {
-
-        DiagramGraph basicPatternGraph = createBasicPatternGraph1();
-
-        Node basicPatternPropNode =  basicPatternGraph.getNodeList("Property").get(0);
-        Edge basicPatternTypeEdge = basicPatternPropNode.getOutgoingEdge("type");
-        Node basicPatternDataTypeNode = basicPatternTypeEdge.getTarget();
-        Edge basicPatternClassEdge = basicPatternPropNode.getOutgoingEdge("class");
-        Node basicPatternClassNode = basicPatternClassEdge.getTarget();
-        Edge basicPatternOwnedAttrEdge = Node.getEdge(basicPatternClassNode, basicPatternPropNode, "ownedAttribute");  
-        AttributeEdge basicPatternLowerAttrEdge = basicPatternPropNode.getAttributeEdge("lower");
-        DataNode basicPatternDataNode1 = basicPatternLowerAttrEdge.getTarget();
-        AttributeEdge basicPatternUpperAttrEdge = basicPatternPropNode.getAttributeEdge("upper");
-        DataNode basicPatternDataNode2 = basicPatternUpperAttrEdge.getTarget();
-
-        for (propNodeCount = propNodeCountStart; propNodeCount < diagramPropNodeList.size(); propNodeCount++) {
-
-          Node diagramPropNode = diagramPropNodeList.get(propNodeCount);
-          Edge diagramTypeEdge = diagramPropNode.getOutgoingEdge("type");
-          
-          if (diagramTypeEdge.getTarget().getType().equals("DataType")) {
-
-            Node diagramDataTypeNode = diagramTypeEdge.getTarget();
-            Edge diagramClassEdge = diagramPropNode.getOutgoingEdge("class");
-            Node diagramClassNode = diagramClassEdge.getTarget();
-            Edge diagramOwnedAttrEdge = Node.getEdge(diagramClassNode, diagramPropNode, "ownedAttribute");  
-            AttributeEdge diagramLowerAttrEdge = diagramPropNode.getAttributeEdge("lower");
-            DataNode diagramDataNode1 = diagramLowerAttrEdge.getTarget();
-            AttributeEdge diagramUpperAttrEdge = diagramPropNode.getAttributeEdge("upper");
-            DataNode diagramDataNode2 = diagramUpperAttrEdge.getTarget();
-
-            ArrayList<NodePair> nodeMapping = new ArrayList<NodePair>();
-            NodePair nodePair1 = new NodePair(basicPatternClassNode, diagramClassNode);
-            NodePair nodePair2 = new NodePair(basicPatternDataTypeNode, diagramDataTypeNode);
-            NodePair nodePair3 = new NodePair(basicPatternPropNode, diagramPropNode);
-            nodeMapping.add(nodePair1);
-            nodeMapping.add(nodePair2);
-            nodeMapping.add(nodePair3);
-            diagramCoverageNodeMappingList.add(nodeMapping);
-            ArrayList<EdgePair> edgeMapping = new ArrayList<EdgePair>();
-            EdgePair edgePair1 = new EdgePair(basicPatternClassEdge, diagramClassEdge);
-            EdgePair edgePair2 = new EdgePair(basicPatternTypeEdge, diagramTypeEdge);
-            EdgePair edgePair3 = new EdgePair(basicPatternOwnedAttrEdge, diagramOwnedAttrEdge);
-            edgeMapping.add(edgePair1);
-            edgeMapping.add(edgePair2);
-            edgeMapping.add(edgePair3);
-            diagramCoverageEdgeMappingList.add(edgeMapping);
-            ArrayList<DataNodePair> dataNodeMapping = new ArrayList<DataNodePair>();
-            DataNodePair dataNodePair1 = new DataNodePair(basicPatternDataNode1, diagramDataNode1);
-            DataNodePair dataNodePair2 = new DataNodePair(basicPatternDataNode2, diagramDataNode2);
-            dataNodeMapping.add(dataNodePair1);
-            dataNodeMapping.add(dataNodePair2);
-            diagramCoverageDataNodeMappingList.add(dataNodeMapping);
-            ArrayList<AttributeEdgePair> attrEdgeMapping = new ArrayList<AttributeEdgePair>();
-            AttributeEdgePair attrEdgePair1 = new AttributeEdgePair(basicPatternLowerAttrEdge, diagramLowerAttrEdge);
-            AttributeEdgePair attrEdgePair2 = new AttributeEdgePair(basicPatternUpperAttrEdge, diagramUpperAttrEdge);
-            attrEdgeMapping.add(attrEdgePair1);
-            attrEdgeMapping.add(attrEdgePair2);
-            diagramCoverageAttrEdgeMappingList.add(attrEdgeMapping);
-
-            basicPatternGraphList.add(basicPatternGraph);
-
-            propNodeCountStart = propNodeCount + 1;
-
-            break;
-
-          }
-
-        }
-
-        if (propNodeCount == diagramPropNodeList.size())
-          break;
-
-      }
-
-      for (int i = 0; i < diagramGenNodeList.size(); i++) {
-
-        DiagramGraph basicPatternGraph = createBasicPatternGraph2();
-
-        Node basicPatternGenNode = basicPatternGraph.getNodeList("Generalization").get(0);
-        Edge basicPatternGeneralEdge = basicPatternGenNode.getOutgoingEdge("general");
-        Edge basicPatternSpecifciEdge = basicPatternGenNode.getOutgoingEdge("specific");
-        Node basicPatternClassNode1 = basicPatternGeneralEdge.getTarget();
-        Node basicPatternClassNode2 = basicPatternSpecifciEdge.getTarget();
-
-        Node diagramGenNode = diagramGenNodeList.get(i);
-        Edge diagramGeneralEdge = diagramGenNode.getOutgoingEdge("general");
-        Edge diagramSpecifciEdge = diagramGenNode.getOutgoingEdge("specific");
-        Node diagramClassNode1 = diagramGeneralEdge.getTarget();
-        Node diagramClassNode2 = diagramSpecifciEdge.getTarget();
-        
-        ArrayList<NodePair> nodeMapping = new ArrayList<NodePair>();
-        NodePair nodePair1 = new NodePair(basicPatternClassNode1, diagramClassNode1);
-        NodePair nodePair2 = new NodePair(basicPatternClassNode2, diagramClassNode2);
-        NodePair nodePair3 = new NodePair(basicPatternGenNode, diagramGenNode);
-        nodeMapping.add(nodePair1);
-        nodeMapping.add(nodePair2);
-        nodeMapping.add(nodePair3);
-        diagramCoverageNodeMappingList.add(nodeMapping);
-        ArrayList<EdgePair> edgeMapping = new ArrayList<EdgePair>();
-        EdgePair edgePair1 = new EdgePair(basicPatternGeneralEdge, diagramGeneralEdge);
-        EdgePair edgePair2 = new EdgePair(basicPatternSpecifciEdge, diagramSpecifciEdge);
-        edgeMapping.add(edgePair1);
-        edgeMapping.add(edgePair2);
-        diagramCoverageEdgeMappingList.add(edgeMapping);
-
-        basicPatternGraphList.add(basicPatternGraph);
-
-      }
-
-      int assocNodeCountStart = 0;
-      int assocNodeCount = 0;
-
-      while (true) {
-
-        DiagramGraph basicPatternGraph = createBasicPatternGraph3();
-
-        Node basicPatternAssocNode =  basicPatternGraph.getNodeList("Association").get(0);
-        ArrayList<Edge> basicPatternMemberEndEdgeList = basicPatternAssocNode.getOutgoingEdgeList("memberEnd");
-        Node basicPatternPropNode1 = basicPatternMemberEndEdgeList.get(0).getTarget();
-        Edge basicPatternClassEdge1 = basicPatternPropNode1.getOutgoingEdge("class");
-        Node basicPatternClassNode1 = basicPatternClassEdge1.getTarget();
-        Node basicPatternPropNode2 = basicPatternMemberEndEdgeList.get(1).getTarget();
-        Edge basicPatternClassEdge2 = basicPatternPropNode2.getOutgoingEdge("class");
-        Node basicPatternClassNode2 = basicPatternClassEdge2.getTarget();
-        Edge basicPatternTypeEdge1 = basicPatternPropNode1.getOutgoingEdge("type");
-        Edge basicPatternTypeEdge2 = basicPatternPropNode2.getOutgoingEdge("type");
-        Edge basicPatternOwnedAttrEdge1 = Node.getEdge(basicPatternClassNode1, basicPatternPropNode1, "ownedAttribute"); 
-        Edge basicPatternOwnedAttrEdge2 = Node.getEdge(basicPatternClassNode2, basicPatternPropNode2, "ownedAttribute");
-        AttributeEdge basicPatternLowerAttrEdge1 = basicPatternPropNode1.getAttributeEdge("lower");
-        DataNode basicPatternDataNode1 = basicPatternLowerAttrEdge1.getTarget();
-        AttributeEdge basicPatternUpperAttrEdge1 = basicPatternPropNode1.getAttributeEdge("upper");
-        DataNode basicPatternDataNode2 = basicPatternUpperAttrEdge1.getTarget(); 
-        AttributeEdge basicPatternLowerAttrEdge2 = basicPatternPropNode2.getAttributeEdge("lower");
-        DataNode basicPatternDataNode3 = basicPatternLowerAttrEdge2.getTarget();
-        AttributeEdge basicPatternUpperAttrEdge2 = basicPatternPropNode2.getAttributeEdge("upper");
-        DataNode basicPatternDataNode4 = basicPatternUpperAttrEdge2.getTarget(); 
-
-        for (assocNodeCount = assocNodeCountStart; assocNodeCount < diagramAssocNodeList.size(); assocNodeCount++) {
-
-          Node diagramAssocNode = diagramAssocNodeList.get(assocNodeCount);
-          ArrayList<Edge> diagramOwnedEndEdgeList = diagramAssocNode.getOutgoingEdgeList("ownedEnd");
-
-          if (diagramOwnedEndEdgeList.size() == 0) {
-
-            ArrayList<Edge> diagramMemberEndEdgeList = diagramAssocNode.getOutgoingEdgeList("memberEnd");
-            Node diagramPropNode1 = diagramMemberEndEdgeList.get(0).getTarget();        
-            Edge diagramClassEdge1 = diagramPropNode1.getOutgoingEdge("class");
-            Node diagramClassNode1 = diagramClassEdge1.getTarget();
-            Node diagramPropNode2 = diagramMemberEndEdgeList.get(1).getTarget();        
-            Edge diagramClassEdge2 = diagramPropNode2.getOutgoingEdge("class");
-            Node diagramClassNode2 = diagramClassEdge2.getTarget();
-            Edge diagramTypeEdge1 = diagramPropNode1.getOutgoingEdge("type");
-            Edge diagramTypeEdge2 = diagramPropNode2.getOutgoingEdge("type");
-            Edge diagramOwnedAttrEdge1 = Node.getEdge(diagramClassNode1, diagramPropNode1, "ownedAttribute");       
-            Edge diagramOwnedAttrEdge2 = Node.getEdge(diagramClassNode2, diagramPropNode2, "ownedAttribute");
-            AttributeEdge diagramLowerAttrEdge1 = diagramPropNode1.getAttributeEdge("lower");
-            DataNode diagramDataNode1 = diagramLowerAttrEdge1.getTarget();
-            AttributeEdge diagramUpperAttrEdge1 = diagramPropNode1.getAttributeEdge("upper");
-            DataNode diagramDataNode2 = diagramUpperAttrEdge1.getTarget();
-            AttributeEdge diagramLowerAttrEdge2 = diagramPropNode2.getAttributeEdge("lower");
-            DataNode diagramDataNode3 = diagramLowerAttrEdge2.getTarget();
-            AttributeEdge diagramUpperAttrEdge2 = diagramPropNode2.getAttributeEdge("upper");
-            DataNode diagramDataNode4 = diagramUpperAttrEdge2.getTarget();
-
-            ArrayList<NodePair> nodeMapping = new ArrayList<NodePair>();
-            NodePair nodePair1 = new NodePair(basicPatternClassNode1, diagramClassNode1);
-            NodePair nodePair2 = new NodePair(basicPatternClassNode2, diagramClassNode2);
-            NodePair nodePair3 = new NodePair(basicPatternPropNode1, diagramPropNode1);
-            NodePair nodePair4 = new NodePair(basicPatternPropNode2, diagramPropNode2);
-            NodePair nodePair5 = new NodePair(basicPatternAssocNode, diagramAssocNode);
-            nodeMapping.add(nodePair1);
-            nodeMapping.add(nodePair2);
-            nodeMapping.add(nodePair3);
-            nodeMapping.add(nodePair4);
-            nodeMapping.add(nodePair5);
-            diagramCoverageNodeMappingList.add(nodeMapping);
-            ArrayList<EdgePair> edgeMapping = new ArrayList<EdgePair>();
-            EdgePair edgePair1 = new EdgePair(basicPatternClassEdge1, diagramClassEdge1);
-            EdgePair edgePair2 = new EdgePair(basicPatternClassEdge2, diagramClassEdge1);
-            EdgePair edgePair3 = new EdgePair(basicPatternTypeEdge1, diagramTypeEdge1);
-            EdgePair edgePair4 = new EdgePair(basicPatternTypeEdge2, diagramTypeEdge2);
-            EdgePair edgePair5 = new EdgePair(basicPatternOwnedAttrEdge1, diagramOwnedAttrEdge1);
-            EdgePair edgePair6 = new EdgePair(basicPatternOwnedAttrEdge2, diagramOwnedAttrEdge2);
-            EdgePair edgePair7 = new EdgePair(basicPatternMemberEndEdgeList.get(0), diagramMemberEndEdgeList.get(0));
-            EdgePair edgePair8 = new EdgePair(basicPatternMemberEndEdgeList.get(1), diagramMemberEndEdgeList.get(1));
-            edgeMapping.add(edgePair1);
-            edgeMapping.add(edgePair2);
-            edgeMapping.add(edgePair3);
-            edgeMapping.add(edgePair4);
-            edgeMapping.add(edgePair5);
-            edgeMapping.add(edgePair6);
-            edgeMapping.add(edgePair7);
-            edgeMapping.add(edgePair8);
-            diagramCoverageEdgeMappingList.add(edgeMapping);
-            ArrayList<DataNodePair> dataNodeMapping = new ArrayList<DataNodePair>();
-            DataNodePair dataNodePair1 = new DataNodePair(basicPatternDataNode1, diagramDataNode1);
-            DataNodePair dataNodePair2 = new DataNodePair(basicPatternDataNode2, diagramDataNode2);
-            DataNodePair dataNodePair3 = new DataNodePair(basicPatternDataNode3, diagramDataNode3);
-            DataNodePair dataNodePair4 = new DataNodePair(basicPatternDataNode4, diagramDataNode4);
-            dataNodeMapping.add(dataNodePair1);
-            dataNodeMapping.add(dataNodePair2);
-            dataNodeMapping.add(dataNodePair3);
-            dataNodeMapping.add(dataNodePair4);
-            diagramCoverageDataNodeMappingList.add(dataNodeMapping);
-            ArrayList<AttributeEdgePair> attrEdgeMapping = new ArrayList<AttributeEdgePair>();
-            AttributeEdgePair attrEdgePair1 = new AttributeEdgePair(basicPatternLowerAttrEdge1, diagramLowerAttrEdge1);
-            AttributeEdgePair attrEdgePair2 = new AttributeEdgePair(basicPatternUpperAttrEdge1, diagramUpperAttrEdge1);
-            AttributeEdgePair attrEdgePair3 = new AttributeEdgePair(basicPatternLowerAttrEdge2, diagramLowerAttrEdge2);
-            AttributeEdgePair attrEdgePair4 = new AttributeEdgePair(basicPatternUpperAttrEdge2, diagramUpperAttrEdge2);
-            attrEdgeMapping.add(attrEdgePair1);
-            attrEdgeMapping.add(attrEdgePair2);
-            attrEdgeMapping.add(attrEdgePair3);
-            attrEdgeMapping.add(attrEdgePair4);
-            diagramCoverageAttrEdgeMappingList.add(attrEdgeMapping);
-
-            basicPatternGraphList.add(basicPatternGraph);
-
-            assocNodeCountStart = assocNodeCount + 1;
-
-            break;
-
-          }
-
-        }
-
-        if (assocNodeCount == diagramAssocNodeList.size())
-          break;
-
-      }
-
-      assocNodeCountStart = 0;
-      assocNodeCount = 0;
-
-      while (true) {
-
-        DiagramGraph basicPatternGraph = createBasicPatternGraph4();
-
-        Node basicPatternAssocNode =  basicPatternGraph.getNodeList("Association").get(0);
-        ArrayList<Edge> basicPatternMemberEndEdgeList = basicPatternAssocNode.getOutgoingEdgeList("memberEnd");
-        Edge basicPatternOwnedEndEdge = basicPatternAssocNode.getOutgoingEdge("ownedEnd");
-        Node basicPatternPropNode2 = basicPatternOwnedEndEdge.getTarget();
-        Edge basicPatternTypeEdge2 = basicPatternPropNode2.getOutgoingEdge("type");
-        Edge basicPatternMemberEndEdge1 = null;
-        Edge basicPatternMemberEndEdge2 = null;
-        if (basicPatternMemberEndEdgeList.get(0).getTarget() == basicPatternPropNode2) {
-          basicPatternMemberEndEdge1 = basicPatternMemberEndEdgeList.get(1);
-          basicPatternMemberEndEdge2 = basicPatternMemberEndEdgeList.get(0);
-        } else {
-          basicPatternMemberEndEdge1 = basicPatternMemberEndEdgeList.get(0);
-          basicPatternMemberEndEdge2 = basicPatternMemberEndEdgeList.get(1);
-        }
-        Node basicPatternPropNode1 = basicPatternMemberEndEdge1.getTarget(); 
-        Edge basicPatternClassEdge1 = basicPatternPropNode1.getOutgoingEdge("class");
-        Node basicPatternClassNode1 = basicPatternClassEdge1.getTarget();
-        Edge basicPatternTypeEdge1 = basicPatternPropNode1.getOutgoingEdge("type");
-        Edge basicPatternOwnedAttrEdge1 = Node.getEdge(basicPatternClassNode1, basicPatternPropNode1, "ownedAttribute"); 
-        Node basicPatternClassNode2 = basicPatternTypeEdge1.getTarget();
-        AttributeEdge basicPatternLowerAttrEdge1 = basicPatternPropNode1.getAttributeEdge("lower");
-        DataNode basicPatternDataNode1 = basicPatternLowerAttrEdge1.getTarget();
-        AttributeEdge basicPatternUpperAttrEdge1 = basicPatternPropNode1.getAttributeEdge("upper");
-        DataNode basicPatternDataNode2 = basicPatternUpperAttrEdge1.getTarget(); 
-        AttributeEdge basicPatternLowerAttrEdge2 = basicPatternPropNode2.getAttributeEdge("lower");
-        DataNode basicPatternDataNode3 = basicPatternLowerAttrEdge2.getTarget();
-        AttributeEdge basicPatternUpperAttrEdge2 = basicPatternPropNode2.getAttributeEdge("upper");
-        DataNode basicPatternDataNode4 = basicPatternUpperAttrEdge2.getTarget(); 
-
-        for (assocNodeCount = assocNodeCountStart; assocNodeCount < diagramAssocNodeList.size(); assocNodeCount++) {
-
-          Node diagramAssocNode = diagramAssocNodeList.get(assocNodeCount);
-          ArrayList<Edge> diagramOwnedEndEdgeList = diagramAssocNode.getOutgoingEdgeList("ownedEnd");
-
-          if (diagramOwnedEndEdgeList.size() == 1) {
-            ArrayList<Edge> diagramMemberEndEdgeList = diagramAssocNode.getOutgoingEdgeList("memberEnd");
-            Edge diagramOwnedEndEdge = diagramAssocNode.getOutgoingEdge("ownedEnd");
-            Node diagramPropNode2 = diagramOwnedEndEdge.getTarget();  
-            Edge diagramTypeEdge2 = diagramPropNode2.getOutgoingEdge("type");
-            Edge diagramMemberEndEdge1 = null;
-            Edge diagramMemberEndEdge2 = null;
-            if (diagramMemberEndEdgeList.get(0).getTarget() == diagramPropNode2) {
-              diagramMemberEndEdge1 = diagramMemberEndEdgeList.get(1);
-              diagramMemberEndEdge2 = diagramMemberEndEdgeList.get(0);
-            } else {
-              diagramMemberEndEdge1 = diagramMemberEndEdgeList.get(0);
-              diagramMemberEndEdge2 = diagramMemberEndEdgeList.get(1);
-            }
-            Node diagramPropNode1 = diagramMemberEndEdge1.getTarget();   
-            Edge diagramClassEdge1 = diagramPropNode1.getOutgoingEdge("class");
-            Node diagramClassNode1 = diagramClassEdge1.getTarget();
-            Edge diagramTypeEdge1 = diagramPropNode1.getOutgoingEdge("type");
-            Edge diagramOwnedAttrEdge1 = Node.getEdge(diagramClassNode1, diagramPropNode1, "ownedAttribute"); 
-            Node diagramClassNode2 = diagramTypeEdge1.getTarget();
-            AttributeEdge diagramLowerAttrEdge1 = diagramPropNode1.getAttributeEdge("lower");
-            DataNode diagramDataNode1 = diagramLowerAttrEdge1.getTarget();
-            AttributeEdge diagramUpperAttrEdge1 = diagramPropNode1.getAttributeEdge("upper");
-            DataNode diagramDataNode2 = diagramUpperAttrEdge1.getTarget();
-            AttributeEdge diagramLowerAttrEdge2 = diagramPropNode2.getAttributeEdge("lower");
-            DataNode diagramDataNode3 = diagramLowerAttrEdge2.getTarget();
-            AttributeEdge diagramUpperAttrEdge2 = diagramPropNode2.getAttributeEdge("upper");
-            DataNode diagramDataNode4 = diagramUpperAttrEdge2.getTarget();
-
-            ArrayList<NodePair> nodeMapping = new ArrayList<NodePair>();
-            NodePair nodePair1 = new NodePair(basicPatternClassNode1, diagramClassNode1);
-            NodePair nodePair2 = new NodePair(basicPatternClassNode2, diagramClassNode2);
-            NodePair nodePair3 = new NodePair(basicPatternPropNode1, diagramPropNode1);
-            NodePair nodePair4 = new NodePair(basicPatternPropNode2, diagramPropNode2);
-            NodePair nodePair5 = new NodePair(basicPatternAssocNode, diagramAssocNode);
-            nodeMapping.add(nodePair1);
-            nodeMapping.add(nodePair2);
-            nodeMapping.add(nodePair3);
-            nodeMapping.add(nodePair4);
-            nodeMapping.add(nodePair5);
-            diagramCoverageNodeMappingList.add(nodeMapping);
-            ArrayList<EdgePair> edgeMapping = new ArrayList<EdgePair>();
-            EdgePair edgePair1 = new EdgePair(basicPatternClassEdge1, diagramClassEdge1);
-            EdgePair edgePair2 = new EdgePair(basicPatternTypeEdge1, diagramTypeEdge1);
-            EdgePair edgePair3 = new EdgePair(basicPatternTypeEdge2, diagramTypeEdge2);
-            EdgePair edgePair4 = new EdgePair(basicPatternOwnedAttrEdge1, diagramOwnedAttrEdge1);
-            EdgePair edgePair5 = new EdgePair(basicPatternMemberEndEdge1, diagramMemberEndEdge1);
-            EdgePair edgePair6 = new EdgePair(basicPatternMemberEndEdge2, diagramMemberEndEdge2);
-            EdgePair edgePair7 = new EdgePair(basicPatternOwnedEndEdge, diagramOwnedEndEdge);
-            edgeMapping.add(edgePair1);
-            edgeMapping.add(edgePair2);
-            edgeMapping.add(edgePair3);
-            edgeMapping.add(edgePair4);
-            edgeMapping.add(edgePair5);
-            edgeMapping.add(edgePair6);
-            edgeMapping.add(edgePair7);
-            diagramCoverageEdgeMappingList.add(edgeMapping);
-            ArrayList<DataNodePair> dataNodeMapping = new ArrayList<DataNodePair>();
-            DataNodePair dataNodePair1 = new DataNodePair(basicPatternDataNode1, diagramDataNode1);
-            DataNodePair dataNodePair2 = new DataNodePair(basicPatternDataNode2, diagramDataNode2);
-            DataNodePair dataNodePair3 = new DataNodePair(basicPatternDataNode3, diagramDataNode3);
-            DataNodePair dataNodePair4 = new DataNodePair(basicPatternDataNode4, diagramDataNode4);
-            dataNodeMapping.add(dataNodePair1);
-            dataNodeMapping.add(dataNodePair2);
-            dataNodeMapping.add(dataNodePair3);
-            dataNodeMapping.add(dataNodePair4);
-            diagramCoverageDataNodeMappingList.add(dataNodeMapping);
-            ArrayList<AttributeEdgePair> attrEdgeMapping = new ArrayList<AttributeEdgePair>();
-            AttributeEdgePair attrEdgePair1 = new AttributeEdgePair(basicPatternLowerAttrEdge1, diagramLowerAttrEdge1);
-            AttributeEdgePair attrEdgePair2 = new AttributeEdgePair(basicPatternUpperAttrEdge1, diagramUpperAttrEdge1);
-            AttributeEdgePair attrEdgePair3 = new AttributeEdgePair(basicPatternLowerAttrEdge2, diagramLowerAttrEdge2);
-            AttributeEdgePair attrEdgePair4 = new AttributeEdgePair(basicPatternUpperAttrEdge2, diagramUpperAttrEdge2);
-            attrEdgeMapping.add(attrEdgePair1);
-            attrEdgeMapping.add(attrEdgePair2);
-            attrEdgeMapping.add(attrEdgePair3);
-            attrEdgeMapping.add(attrEdgePair4);
-            diagramCoverageAttrEdgeMappingList.add(attrEdgeMapping);
-
-            basicPatternGraphList.add(basicPatternGraph);
-
-            assocNodeCountStart = assocNodeCount + 1;
-
-            break;
-
-          }
-
-        }
-
-        if (assocNodeCount == diagramAssocNodeList.size())
-          break;
-
-      }
+      ArrayList<Stack<NodePair>> diagramCoverageNodeMappingList = basicPatternGraphGenerator.getDiagramCoverageNodeMappingList();
+      ArrayList<Stack<NodePair>> diagramCoverageEdgeMappingList = basicPatternGraphGenerator.getDiagramCoverageEdgeMappingList();
 
       basicPatternCoverage = true;
       for (Node node : diagramNodeList)
@@ -566,315 +196,6 @@ public class DiagramClassCalculator {
   } 
 
   /**
-   * Generates an E-graph of the basic patter 1. 
-   * @return the E-graph of the basic patter 1
-   */
-  public static DiagramGraph createBasicPatternGraph1() {
-    DiagramGraph basicPatternGraph = new DiagramGraph();
-    ArrayList<Node> nodeList = basicPatternGraph.getNodeList();
-    ArrayList<Edge> edgeList = basicPatternGraph.getEdgeList();
-    ArrayList<DataNode> dataNodeList = basicPatternGraph.getDataNodeList();
-    ArrayList<AttributeEdge> attrEdgeList = basicPatternGraph.getAttributeEdgeList();
-    Node classNode = new Node("c1", "Class");
-    nodeList.add(classNode);
-    Node dataTypeNode = new Node("dt1", "DataType");
-    nodeList.add(dataTypeNode);
-    Node propNode = new Node("p1", "Property");
-    nodeList.add(propNode);
-    Edge classEdge = new Edge(null, "class", propNode, classNode);
-    Edge ownedAttrEdge = new Edge(null, "ownedAttribute", classNode, propNode);
-    Edge typeEdge = new Edge(null, "type", propNode, dataTypeNode);
-    edgeList.add(typeEdge);
-    edgeList.add(classEdge);
-    edgeList.add(ownedAttrEdge);
-    ArrayList<Edge> outgoingEdgeList = propNode.getOutgoingEdgeList();
-    outgoingEdgeList.add(typeEdge);
-    outgoingEdgeList.add(classEdge);
-    outgoingEdgeList = classNode.getOutgoingEdgeList();
-    outgoingEdgeList.add(ownedAttrEdge);
-    ArrayList<Edge> incomingEdgeList = propNode.getIncomingEdgeList();
-    incomingEdgeList.add(ownedAttrEdge);
-    incomingEdgeList = dataTypeNode.getIncomingEdgeList();
-    incomingEdgeList.add(typeEdge);
-    incomingEdgeList = classNode.getIncomingEdgeList();
-    incomingEdgeList.add(classEdge);
-    DataNode dataNode = new DataNode("1", "Integer", null);
-    dataNodeList.add(dataNode);
-    AttributeEdge attrEdge = new AttributeEdge(null, "lower", propNode, dataNode);
-    attrEdgeList.add(attrEdge);
-    ArrayList<AttributeEdge> outgoingAttrEdgeList = propNode.getAttributeEdgeList();
-    outgoingAttrEdgeList.add(attrEdge);
-    dataNode = new DataNode("1", "Integer", null);
-    dataNodeList.add(dataNode);
-    attrEdge = new AttributeEdge(null, "upper", propNode, dataNode);
-    attrEdgeList.add(attrEdge);
-    outgoingAttrEdgeList = propNode.getAttributeEdgeList();
-    outgoingAttrEdgeList.add(attrEdge);
-    dataNode = new DataNode("false", "Boolean", null);
-    dataNodeList.add(dataNode);
-    attrEdge = new AttributeEdge(null, "isAbstract", classNode, dataNode);
-    attrEdgeList.add(attrEdge);
-    outgoingAttrEdgeList = classNode.getAttributeEdgeList();
-    outgoingAttrEdgeList.add(attrEdge);
-    return basicPatternGraph;
-  }
-
-  /**
-   * Generates an E-graph of the basic patter 2. 
-   * @return the E-graph of the basic patter 2
-   */
-  public static DiagramGraph createBasicPatternGraph2() {
-    DiagramGraph basicPatternGraph = new DiagramGraph();
-    ArrayList<Node> nodeList = basicPatternGraph.getNodeList();
-    ArrayList<Edge> edgeList = basicPatternGraph.getEdgeList();
-    ArrayList<DataNode> dataNodeList = basicPatternGraph.getDataNodeList();
-    ArrayList<AttributeEdge> attrEdgeList = basicPatternGraph.getAttributeEdgeList();
-    Node classNode1 = new Node("c1", "Class");
-    nodeList.add(classNode1);
-    Node classNode2 = new Node("c2", "Class");
-    nodeList.add(classNode2);
-    Node genNode = new Node("g1", "Generalization");
-    nodeList.add(genNode);
-    Edge generalEdge = new Edge(null, "general", genNode, classNode2);
-    Edge specificEdge = new Edge(null, "specific", genNode, classNode1);
-    edgeList.add(generalEdge);
-    edgeList.add(specificEdge);
-    ArrayList<Edge> outgoingEdgeList = genNode.getOutgoingEdgeList();
-    outgoingEdgeList.add(generalEdge);
-    outgoingEdgeList.add(specificEdge);
-    ArrayList<Edge> incomingEdgeList = classNode1.getIncomingEdgeList();
-    incomingEdgeList.add(specificEdge);
-    incomingEdgeList = classNode2.getIncomingEdgeList();
-    incomingEdgeList.add(generalEdge);
-    DataNode dataNode = new DataNode("false", "Boolean", null);
-    dataNodeList.add(dataNode);
-    AttributeEdge attrEdge = new AttributeEdge(null, "isAbstract", classNode1, dataNode);
-    attrEdgeList.add(attrEdge);
-    ArrayList<AttributeEdge> outgoingAttrEdgeList = classNode1.getAttributeEdgeList();
-    outgoingAttrEdgeList.add(attrEdge);
-    dataNode = new DataNode("false", "Boolean", null);
-    dataNodeList.add(dataNode);
-    attrEdge = new AttributeEdge(null, "isAbstract", classNode2, dataNode);
-    attrEdgeList.add(attrEdge);
-    outgoingAttrEdgeList = classNode2.getAttributeEdgeList();
-    outgoingAttrEdgeList.add(attrEdge);
-    return basicPatternGraph;
-  }
-
-  /**
-   * Generates an E-graph of the basic patter 3. 
-   * @return the E-graph of the basic patter 3
-   */
-  public static DiagramGraph createBasicPatternGraph3() {
-    DiagramGraph basicPatternGraph = new DiagramGraph();
-    ArrayList<Node> nodeList = basicPatternGraph.getNodeList();
-    ArrayList<Edge> edgeList = basicPatternGraph.getEdgeList();
-    ArrayList<DataNode> dataNodeList = basicPatternGraph.getDataNodeList();
-    ArrayList<AttributeEdge> attrEdgeList = basicPatternGraph.getAttributeEdgeList();
-    Node classNode1 = new Node("c1", "Class");
-    nodeList.add(classNode1);
-    Node classNode2 = new Node("c2", "Class");
-    nodeList.add(classNode2);
-    Node assocNode = new Node("a1", "Association");
-    nodeList.add(assocNode);
-    Node propNode1 = new Node("p1", "Property");
-    nodeList.add(propNode1);
-    Node propNode2 = new Node("p2", "Property");
-    nodeList.add(propNode2);
-    Edge memberEndEdge1 = new Edge(null, "memberEnd", assocNode, propNode1);
-    Edge memberEndEdge2 = new Edge(null, "memberEnd", assocNode, propNode2);
-    Edge typeEdge1 = new Edge(null, "type", propNode1, classNode2);
-    Edge typeEdge2 = new Edge(null, "type", propNode2, classNode1);
-    Edge ownedAttributeEdge1 = new Edge(null, "ownedAttribute", classNode1, propNode1);
-    Edge ownedAttributeEdge2 = new Edge(null, "ownedAttribute", classNode2, propNode2);
-    Edge assocEdge1 = new Edge(null, "association", propNode1, assocNode);
-    Edge assocEdge2 = new Edge(null, "association", propNode2, assocNode);
-    Edge classEdge1 = new Edge(null, "class", propNode1, classNode1);
-    Edge classEdge2 = new Edge(null, "class", propNode2, classNode2);
-    edgeList.add(memberEndEdge1);
-    edgeList.add(memberEndEdge2);
-    edgeList.add(typeEdge1);
-    edgeList.add(typeEdge2);
-    edgeList.add(ownedAttributeEdge1);
-    edgeList.add(ownedAttributeEdge2);
-    edgeList.add(assocEdge1);
-    edgeList.add(assocEdge2);
-    edgeList.add(classEdge1);
-    edgeList.add(classEdge2);
-    ArrayList<Edge> outgoingEdgeList = assocNode.getOutgoingEdgeList();
-    outgoingEdgeList.add(memberEndEdge1);
-    outgoingEdgeList.add(memberEndEdge2);
-    outgoingEdgeList = propNode1.getOutgoingEdgeList();
-    outgoingEdgeList.add(typeEdge1);
-    outgoingEdgeList.add(classEdge1);
-    outgoingEdgeList.add(assocEdge1);
-    outgoingEdgeList = propNode2.getOutgoingEdgeList();
-    outgoingEdgeList.add(typeEdge2);
-    outgoingEdgeList.add(classEdge2);
-    outgoingEdgeList.add(assocEdge2);
-    outgoingEdgeList = classNode1.getOutgoingEdgeList();
-    outgoingEdgeList.add(ownedAttributeEdge1);
-    outgoingEdgeList = classNode2.getOutgoingEdgeList();
-    outgoingEdgeList.add(ownedAttributeEdge2);
-    ArrayList<Edge> incomingEdgeList = assocNode.getIncomingEdgeList();
-    incomingEdgeList.add(assocEdge1);
-    incomingEdgeList.add(assocEdge2);
-    incomingEdgeList = propNode1.getIncomingEdgeList();
-    incomingEdgeList.add(ownedAttributeEdge1);
-    incomingEdgeList.add(memberEndEdge1);
-    incomingEdgeList = propNode2.getIncomingEdgeList();
-    incomingEdgeList.add(ownedAttributeEdge2);
-    incomingEdgeList.add(memberEndEdge2);
-    incomingEdgeList = classNode1.getIncomingEdgeList();
-    incomingEdgeList.add(typeEdge2);
-    incomingEdgeList.add(classEdge1);
-    incomingEdgeList = classNode2.getIncomingEdgeList();
-    incomingEdgeList.add(typeEdge1);
-    incomingEdgeList.add(classEdge2);
-    DataNode dataNode = new DataNode("0", "Integer", null);
-    dataNodeList.add(dataNode);
-    AttributeEdge attrEdge = new AttributeEdge(null, "lower", propNode1, dataNode);
-    attrEdgeList.add(attrEdge);
-    ArrayList<AttributeEdge> outgoingAttrEdgeList = propNode1.getAttributeEdgeList();
-    outgoingAttrEdgeList.add(attrEdge);
-    dataNode = new DataNode("-1", "Integer", null);
-    dataNodeList.add(dataNode);
-    attrEdge = new AttributeEdge(null, "upper", propNode1, dataNode);
-    attrEdgeList.add(attrEdge);
-    outgoingAttrEdgeList = propNode1.getAttributeEdgeList();
-    outgoingAttrEdgeList.add(attrEdge);
-    dataNode = new DataNode("0", "Integer", null);
-    dataNodeList.add(dataNode);
-    attrEdge = new AttributeEdge(null, "lower", propNode2, dataNode);
-    attrEdgeList.add(attrEdge);
-    outgoingAttrEdgeList = propNode2.getAttributeEdgeList();
-    outgoingAttrEdgeList.add(attrEdge);
-    dataNode = new DataNode("-1", "Integer", null);
-    dataNodeList.add(dataNode);
-    attrEdge = new AttributeEdge(null, "upper", propNode2, dataNode);
-    attrEdgeList.add(attrEdge);
-    outgoingAttrEdgeList = propNode2.getAttributeEdgeList();
-    outgoingAttrEdgeList.add(attrEdge);
-    dataNode = new DataNode("false", "Boolean", null);
-    dataNodeList.add(dataNode);
-    attrEdge = new AttributeEdge(null, "isAbstract", classNode1, dataNode);
-    attrEdgeList.add(attrEdge);
-    outgoingAttrEdgeList = classNode1.getAttributeEdgeList();
-    outgoingAttrEdgeList.add(attrEdge);
-    dataNode = new DataNode("false", "Boolean", null);
-    dataNodeList.add(dataNode);
-    attrEdge = new AttributeEdge(null, "isAbstract", classNode2, dataNode);
-    attrEdgeList.add(attrEdge);
-    outgoingAttrEdgeList = classNode2.getAttributeEdgeList();
-    outgoingAttrEdgeList.add(attrEdge);
-    return basicPatternGraph;
-  }
-
-  /**
-   * Generates an E-graph of the basic patter 4. 
-   * @return the E-graph of the basic patter 4
-   */
-  public static DiagramGraph createBasicPatternGraph4() {
-    DiagramGraph basicPatternGraph = new DiagramGraph();
-    ArrayList<Node> nodeList = basicPatternGraph.getNodeList();
-    ArrayList<Edge> edgeList = basicPatternGraph.getEdgeList();
-    ArrayList<DataNode> dataNodeList = basicPatternGraph.getDataNodeList();
-    ArrayList<AttributeEdge> attrEdgeList = basicPatternGraph.getAttributeEdgeList();
-    Node classNode1 = new Node("c1", "Class");
-    nodeList.add(classNode1); 
-    Node classNode2 = new Node("c2", "Class");
-    nodeList.add(classNode2);
-    Node assocNode = new Node("a1", "Association");
-    nodeList.add(assocNode);
-    Node propNode1 = new Node("p1", "Property");
-    nodeList.add(propNode1);
-    Node propNode2 = new Node("p2", "Property");
-    nodeList.add(propNode2);
-    Edge memberEndEdge1 = new Edge(null, "memberEnd", assocNode, propNode1);
-    Edge memberEndEdge2 = new Edge(null, "memberEnd", assocNode, propNode2);
-    Edge typeEdge1 = new Edge(null, "type", propNode1, classNode2);
-    Edge typeEdge2 = new Edge(null, "type", propNode2, classNode1);
-    Edge ownedAttributeEdge1 = new Edge(null, "ownedAttribute", classNode1, propNode1);
-    Edge ownedEndEdge = new Edge(null, "ownedEnd", assocNode, propNode2);
-    Edge assocEdge1 = new Edge(null, "association", propNode1, assocNode);
-    Edge assocEdge2 = new Edge(null, "association", propNode2, assocNode);
-    Edge classEdge1 = new Edge(null, "class", propNode1, classNode1);
-    edgeList.add(memberEndEdge1);
-    edgeList.add(memberEndEdge2);
-    edgeList.add(typeEdge1);
-    edgeList.add(typeEdge2);
-    edgeList.add(ownedAttributeEdge1);
-    edgeList.add(ownedEndEdge);
-    edgeList.add(assocEdge1);
-    edgeList.add(assocEdge2);
-    edgeList.add(classEdge1);
-    ArrayList<Edge> outgoingEdgeList = assocNode.getOutgoingEdgeList();
-    outgoingEdgeList.add(memberEndEdge1);
-    outgoingEdgeList.add(memberEndEdge2);
-    outgoingEdgeList.add(ownedEndEdge);
-    outgoingEdgeList = propNode1.getOutgoingEdgeList();
-    outgoingEdgeList.add(typeEdge1);
-    outgoingEdgeList.add(classEdge1);
-    outgoingEdgeList.add(assocEdge1);
-    outgoingEdgeList = propNode2.getOutgoingEdgeList();
-    outgoingEdgeList.add(typeEdge2);
-    outgoingEdgeList.add(assocEdge2);
-    outgoingEdgeList = classNode1.getOutgoingEdgeList();
-    outgoingEdgeList.add(ownedAttributeEdge1);
-    ArrayList<Edge> incomingEdgeList = assocNode.getIncomingEdgeList();
-    incomingEdgeList.add(assocEdge1);
-    incomingEdgeList.add(assocEdge2);
-    incomingEdgeList = propNode1.getIncomingEdgeList();
-    incomingEdgeList.add(ownedAttributeEdge1);
-    incomingEdgeList.add(memberEndEdge1);
-    incomingEdgeList = propNode2.getIncomingEdgeList();
-    incomingEdgeList.add(ownedEndEdge);
-    incomingEdgeList.add(memberEndEdge2);
-    incomingEdgeList = classNode1.getIncomingEdgeList();
-    incomingEdgeList.add(typeEdge2);
-    incomingEdgeList.add(classEdge1);
-    incomingEdgeList = classNode2.getIncomingEdgeList();
-    incomingEdgeList.add(typeEdge1);
-    DataNode dataNode = new DataNode("0", "Integer", null);
-    dataNodeList.add(dataNode);
-    AttributeEdge attrEdge = new AttributeEdge(null, "lower", propNode1, dataNode);
-    attrEdgeList.add(attrEdge);
-    ArrayList<AttributeEdge> outgoingAttrEdgeList = propNode1.getAttributeEdgeList();
-    outgoingAttrEdgeList.add(attrEdge);
-    dataNode = new DataNode("-1", "Integer", null);
-    dataNodeList.add(dataNode);
-    attrEdge = new AttributeEdge(null, "upper", propNode1, dataNode);
-    attrEdgeList.add(attrEdge);
-    outgoingAttrEdgeList = propNode1.getAttributeEdgeList();
-    outgoingAttrEdgeList.add(attrEdge);
-    dataNode = new DataNode("0", "Integer", null);
-    dataNodeList.add(dataNode);
-    attrEdge = new AttributeEdge(null, "lower", propNode2, dataNode);
-    attrEdgeList.add(attrEdge);
-    outgoingAttrEdgeList = propNode2.getAttributeEdgeList();
-    outgoingAttrEdgeList.add(attrEdge);
-    dataNode = new DataNode("-1", "Integer", null);
-    dataNodeList.add(dataNode);
-    attrEdge = new AttributeEdge(null, "upper", propNode2, dataNode);
-    attrEdgeList.add(attrEdge);
-    outgoingAttrEdgeList = propNode2.getAttributeEdgeList();
-    outgoingAttrEdgeList.add(attrEdge);
-    dataNode = new DataNode("false", "Boolean", null);
-    dataNodeList.add(dataNode);
-    attrEdge = new AttributeEdge(null, "isAbstract", classNode1, dataNode);
-    attrEdgeList.add(attrEdge);
-    outgoingAttrEdgeList = classNode1.getAttributeEdgeList();
-    outgoingAttrEdgeList.add(attrEdge);
-    dataNode = new DataNode("false", "Boolean", null);
-    dataNodeList.add(dataNode);
-    attrEdge = new AttributeEdge(null, "isAbstract", classNode2, dataNode);
-    attrEdgeList.add(attrEdge);
-    outgoingAttrEdgeList = classNode2.getAttributeEdgeList();
-    outgoingAttrEdgeList.add(attrEdge);
-    return basicPatternGraph;
-  }
-
-  /**
    * Returns a list of preimage graph nodes from the given list of graph node 
    * mappings that are equal to the given graph node. 
    * @param nodeMappingList - the list of graph node mappings
@@ -882,9 +203,9 @@ public class DiagramClassCalculator {
    * @return the list of preimage graph nodes from the given list of graph node 
    *         mappings that are equal to the given graph node
    */
-  public static ArrayList<Node> getPreImageList(ArrayList<ArrayList<NodePair>> nodeMappingList, Node node) {
+  public static ArrayList<Node> getPreImageList(ArrayList<Stack<NodePair>> nodeMappingList, Node node) {
     ArrayList<Node> nodePreImageList = new ArrayList<Node>();
-    for (ArrayList<NodePair> nodeMapping: nodeMappingList) 
+    for (Stack<NodePair> nodeMapping: nodeMappingList) 
       for (NodePair nodePair: nodeMapping)
         if (nodePair.getNode2() == node)
            nodePreImageList.add(nodePair.getNode1());
@@ -892,9 +213,9 @@ public class DiagramClassCalculator {
   }
 
   /**
-   * Creates a complex pattern E-graph from the given list of basic pattern E-graphs.
-   * @param basicPatternGraphList - the list of basic pattern E-graphs
-   * @return the complex pattern E-graph
+   * Creates a complex template E-graph from the given list of basic template E-graphs.
+   * @param basicPatternGraphList - the list of basic template E-graphs
+   * @return the complex template E-graph
    */
   public static DiagramGraph createComplexPatternGraph(ArrayList<DiagramGraph> basicPatternGraphList) {
      DiagramGraph complexPatternGraph2 = null;
@@ -1067,9 +388,9 @@ public class DiagramClassCalculator {
   }
 
   /**
-   * Extends the given complex pattern E-graph with the basic pattern E-graph.
-   * @param complexPatternGraph - the complex pattern E-graph
-   *        basicPatternGraph - the basic pattern E-graph
+   * Extends the given complex template E-graph with the basic template E-graph.
+   * @param complexPatternGraph - the complex template E-graph
+   *        basicPatternGraph - the basic template E-graph
    * @return the extended complex pattern E-graph
    */
   public static DiagramGraph extendComplexPatternGraph(DiagramGraph complexPatternGraph, DiagramGraph basicPatternGraph) {
@@ -1367,73 +688,9 @@ public class DiagramClassCalculator {
 
   }
 
-  /**
-   * Returns true if the given graph node appears in the list of graph node 
-   * mappings.
-   * @param nodeMappingList - the list of graph node mappings
-   *        node - the graph node
-   * @return true if the given graph node appears in the list of graph node 
-   *         mappings; false otherwise
-   */
-  public static boolean hasNodeMapping(ArrayList<ArrayList<NodePair>> nodeMappingList, Node node) {
-    for (ArrayList<NodePair> nodeMapping : nodeMappingList)
-      for (NodePair nodePair: nodeMapping)
-        if (nodePair.getNode2() == node)
-          return true;
-    return false;
-  }
-
-  /**
-   * Returns true if the given graph edge appears in the list of graph edge 
-   * mappings.
-   * @param edgeMappingList - the list of graph edge mappings
-   *        edge - the graph edge
-   * @return true if the given graph edge appears in the list of graph edge 
-   *         mappings; false otherwise
-   */
-  public static boolean hasEdgeMapping(ArrayList<ArrayList<EdgePair>> edgeMappingList, Edge edge) {
-    for (ArrayList<EdgePair> edgeMapping : edgeMappingList)
-      for (EdgePair edgePair: edgeMapping)
-        if (edgePair.getEdge2() == edge)
-          return true;
-    return false;
-  }
-
-  /**
-   * Returns true if the given data node appears in the list of data node 
-   * mappings.
-   * @param dataNodeMappingList - the list of data node mappings
-   *        dataNode - the data node
-   * @return true if the given data node appears in the list of data node 
-   *         mappings; false otherwise
-   */
-  public static boolean hasDataNodeMapping(ArrayList<ArrayList<DataNodePair>> dataNodeMappingList, DataNode dataNode) {
-    for (ArrayList<DataNodePair> dataNodeMapping : dataNodeMappingList)
-      for (DataNodePair dataNodePair: dataNodeMapping)
-        if (dataNodePair.getDataNode2() == dataNode)
-          return true;
-    return false;
-  }
-
-  /**
-   * Returns true if the given attribute edge appears in the list of attribute 
-   * edge mappings.
-   * @param attrEdgeMappingList - the list of attribute edge mappings
-   *        attrEdge - the attribute edge
-   * @return true if the given attribute edge appears in the list of attribute 
-   *         edge mappings; false otherwise
-   */
-  public static boolean hasAttributeEdgeMapping(ArrayList<ArrayList<AttributeEdgePair>> attrEdgeMappingList, AttributeEdge attrEdge) {
-    for (ArrayList<AttributeEdgePair> attrEdgeMapping : attrEdgeMappingList)
-      for (AttributeEdgePair attrEdgePair: attrEdgeMapping)
-        if (attrEdgePair.getAttributeEdge2() == attrEdge)
-          return true;
-    return false;
-  }
-
   public static void renameBasicPattenGraphElements(
            DiagramGraph diagramGraph, 
-           ArrayList<ArrayList<NodePair>> diagramCoverageNodeMappingList, 
+           ArrayList<Stack<NodePair>> diagramCoverageNodeMappingList, 
            ArrayList<DiagramGraph> basicPatternGraphList) {
 
     int classNodeCount = 1;
@@ -1487,20 +744,19 @@ public class DiagramClassCalculator {
 
   }
 
- 
-  public static boolean isMappedToBasicPatternNode(ArrayList<ArrayList<NodePair>> diagramCoverageNodeMappingList, Node node) {
-    for (ArrayList<NodePair> nodeMapping : diagramCoverageNodeMappingList)
+  public static boolean isMappedToBasicPatternNode(ArrayList<Stack<NodePair>> diagramCoverageNodeMappingList, Node node) {
+    for (Stack<NodePair> nodeMapping : diagramCoverageNodeMappingList)
       for (NodePair nodePair: nodeMapping)
-      if (nodePair.getNode2() == node)
-         return true;
+        if (nodePair.getNode2() == node)
+          return true;
     return false;
   }
 
-  public static boolean isMappedToBasicPatternEdge(ArrayList<ArrayList<EdgePair>> diagramCoverageEdgeMappingList, Edge edge) {
-    for (ArrayList<EdgePair> edgeMapping : diagramCoverageEdgeMappingList)
+  public static boolean isMappedToBasicPatternEdge(ArrayList<Stack<EdgePair>> diagramCoverageEdgeMappingList, Edge edge) {
+    for (Stack<EdgePair> edgeMapping : diagramCoverageEdgeMappingList)
       for (EdgePair edgePair: edgeMapping)
-      if (edgePair.getEdge2() == edge)
-         return true;
+        if (edgePair.getEdge2() == edge)
+          return true;
     return false;
   }
 

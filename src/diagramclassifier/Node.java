@@ -24,6 +24,8 @@ public class Node {
   // The graph node name
   private String name;
 
+  private int matchId = 0;
+
   public Node(String name, String type) {
     this.name = name;
     this.type = type;
@@ -53,34 +55,16 @@ public class Node {
     this.name = name;
   }
 
-  public Edge getOutgoingEdge(String type) {
-     for (Edge edge: outgoingEdgeList)
-       if (edge.getType().equals(type))
-          return edge;
-     return null;
+  public void resetMatchId() {
+    matchId = 0;
   }
 
-  public AttributeEdge getAttributeEdge(String type) {
-     for (AttributeEdge attrEdge: attributeEdgeList)
-       if (attrEdge.getType().equals(type))
-          return attrEdge;
-     return null;
+  public void setMatchId(int matchId) {
+    this.matchId = matchId;
   }
 
-  public static Edge getEdge(Node node1, Node node2, String edgeType) {
-    ArrayList<Edge> outgointEdgeList = node1.getOutgoingEdgeList();
-    for (Edge edge: outgointEdgeList)
-      if (edge.getType().equals(edgeType) && edge.getTarget() == node2)
-        return edge; 
-    return null;
-  }
-
-  public ArrayList<Edge> getOutgoingEdgeList(String type) {
-     ArrayList<Edge> resultEdgeList = new ArrayList<Edge>();
-     for (Edge edge: outgoingEdgeList)
-       if (edge.getType().equals(type))
-          resultEdgeList.add(edge);
-     return resultEdgeList;
+  public int getMatchId() {
+    return matchId;
   }
 
 }

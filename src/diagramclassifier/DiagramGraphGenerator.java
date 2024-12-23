@@ -12,7 +12,6 @@ import org.xml.sax.InputSource;
  */
 public class DiagramGraphGenerator {
 
-
   /**
    * Generates an E-graph representing the given class diagram.
    * @param modelImpl - the ArgoUML model implemetation
@@ -56,6 +55,7 @@ public class DiagramGraphGenerator {
             classNodeList.add(classNode2);
             nodeList.add(classNode2);
             DataNode dataNode = new DataNode("false", "Boolean", null);
+            dataNodeList.add(dataNode);
             AttributeEdge attrEdge = new AttributeEdge(null, "isAbstract", classNode2, dataNode);
             attrEdgeList.add(attrEdge);
             ArrayList<AttributeEdge> outgoingAttrEdgeList = classNode2.getAttributeEdgeList();
